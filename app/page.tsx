@@ -40,18 +40,18 @@ const DragItem:React.FC<any> = ({item,handleDragStart,handleOnDrop,isActive})=>{
 
 
   return (
-    <li className={`${isActive ? 'opacity-40 bg-muted' : 'opacity-100 bg-white'} cursor-pointer py-2 px-4 flex items-center gap-5  ${hoveredOver ? `border-b-4 border-hovered` : '' }`} key={item.id} draggable={true} onDragStart={(e)=>dragStart(e,item)}  onDragOver={(e)=>dragOver(e)} onDragLeave={(e)=>dragLeave(e)} onDrop={(e)=>onDrop(e,item)}>
+    <li className={`${isActive ? 'opacity-40 bg-muted' : 'opacity-100 bg-white'}  cursor-pointer py-[20px] px-[40px] flex items-center gap-[24px]  ${hoveredOver ? `border-b-4 border-hovered` : '' }`} key={item.id} draggable={true} onDragStart={(e)=>dragStart(e,item)}  onDragOver={(e)=>dragOver(e)} onDragLeave={(e)=>dragLeave(e)} onDrop={(e)=>onDrop(e,item)}>
       <div>
-        <Image src={item.img} width={96} height={96} alt="img" className="rounded-lg"/>
+        <Image src={item.img} width={96} height={96} alt="img" className="rounded-[12px]"/>
       </div>
       <div>
-        <h3 className="custom-bold-font text-dark">{item.title}</h3>
-        <div className="flex items-center gap-1 mt-1">
+        <h3 className="custom-bold-font text-title text-dark">{item.title}</h3>
+        <div className="flex items-center gap-[4px]">
           <div className="relative">
             <GrLocationPin color="#a8a9ae" />
             <div className="absolute w-[50%] left-[25%] h-[1px] bg-gray-400 -translate-y-[2px]"></div>
           </div>
-          <h5 className="custom-thin-font text-muted">{item.location}</h5>
+          <h5 className="custom-thin-font text-location text-muted">{item.location}</h5>
         </div>
       </div>
       <div ref={dragImgRef} id={`customDragImage-${item.id}`} className={`absolute  transition duration-[.0001s] ${isActive ? 'opacity-100 translate-x-[2000px]' : 'opacity-0' } flex items-center gap-2 bg-white p-2 rounded-md shadow-md min-w-[288px]`}>
