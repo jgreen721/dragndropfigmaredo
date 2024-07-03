@@ -97,7 +97,7 @@ export default function Home() {
 
   return (
     <main className={`py-10 px-2 flex min-h-screen flex-col items-center justify-between md:p-20 bg-gray-100`}>
-      <ul className="w-[90%] md:w-[560px] bg-white py-2" id="draglist">
+      <ul className="w-[90%] md:w-[560px] h-[946px] bg-white py-2" id="draglist">
         {data.map(item=>(
           <DragItem key={item.id} isActive={active?.id == item.id} item={item} handleDragStart={handleDragStart} handleOnDrop={handleOnDrop}/>
         ))}
