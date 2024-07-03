@@ -1,113 +1,107 @@
-import Image from "next/image";
+"use client"
+import {useState, useRef}from "react"
+import Image from "next/image"
+import { GrLocationPin } from "react-icons/gr";
 
-export default function Home() {
+
+
+const DragItem:React.FC<any> = ({item,handleDragStart,handleOnDrop,isActive})=>{
+      const [hoveredOver,setHoveredOver] = useState(false);
+      const dragImgRef = useRef<any>();
+
+  const dragStart = (e:any,item:any)=>{
+      console.log('dragStart!');
+      handleDragStart(e,item);
+      e.dataTransfer.setData("cardId",item.id);
+      e.dataTransfer.setDragImage(dragImgRef.current,10,10);
+
+          // e.dataTransfer.dropEffect = 'none'     tried eliminating the default green-circle but
+          // e.dataTransfer.effectAllowed = 'none'  nukes the API functionality.
+  }
+
+  const dragOver = (e:any)=>{
+    e.preventDefault()
+    setHoveredOver(true)
+  }
+
+  const dragLeave=(e:any)=>{
+    e.preventDefault();
+    setHoveredOver(false);
+
+  }
+
+  const onDrop=(e:any,item:any)=>{
+    let dragCardId = e.dataTransfer.getData("cardId");
+    handleOnDrop(dragCardId,item)
+    setHoveredOver(false);
+
+
+  }
+
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <li className={`${isActive ? 'opacity-40 bg-muted' : 'opacity-100 bg-white'} cursor-pointer py-2 px-4 flex items-center gap-5  ${hoveredOver ? `border-b-4 border-hovered` : '' }`} key={item.id} draggable={true} onDragStart={(e)=>dragStart(e,item)}  onDragOver={(e)=>dragOver(e)} onDragLeave={(e)=>dragLeave(e)} onDrop={(e)=>onDrop(e,item)}>
+      <div>
+        <Image src={item.img} width={96} height={96} alt="img" className="rounded-lg"/>
+      </div>
+      <div>
+        <h3 className="custom-bold-font text-dark">{item.title}</h3>
+        <div className="flex items-center gap-1 mt-1">
+          <div className="relative">
+            <GrLocationPin color="#a8a9ae" />
+            <div className="absolute w-[50%] left-[25%] h-[1px] bg-gray-400 -translate-y-[2px]"></div>
+          </div>
+          <h5 className="custom-thin-font text-muted">{item.location}</h5>
         </div>
       </div>
+      <div ref={dragImgRef} id={`customDragImage-${item.id}`} className={`absolute  transition duration-[.0001s] ${isActive ? 'opacity-100 translate-x-[2000px]' : 'opacity-0' } flex items-center gap-2 bg-white p-2 rounded-md shadow-md min-w-[288px]`}>
+        <div>
+          <Image src={item.img} width={32} height={32} alt="img" className="rounded-lg"/>
+        </div>
+        <h5 className="text-dark custom-bold-font">{item.title}</h5>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
       </div>
+    </li>
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+  )
+}
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+
+export default function Home() {
+  const [data,setData]=useState([
+    {id:1,title:"Scotland Island",location:"Sydney, Australia",img:"/assets/scotlandisland.png"},
+    {id:2,title:"The Charles Grand Brassserie & Bar",location:"Lorem ipsum, Dolor",img:"/assets/charlesgrandbar.png"},
+    {id:3,title:"Bridge Climb",location:"Dolor, Sit amet",img:"/assets/bridgeclimb.png"},
+    {id:4,title:"Scotland Island",location:"Sydney, Australia",img:"/assets/scotlandisland2.png"},
+    {id:5,title:"Clamb Bar",location:"Etcetera veni, Vidi vici",img:"/assets/clambar.png"},
+    {id:6,title:"Vivid Festival",location:"Sydney, Australia",img:"/assets/vividfestival.png"}
+  ])
+  const [active,setActive] = useState<any>(null);
+
+
+  const handleDragStart=(e:any,card:any)=>{
+    setActive(card)
+  }
+
+  const handleOnDrop=(dragCardId:any,destination:any)=>{
+    // e.dataTransfer.setData("cardId",card.id);
+    // console.lo
+    let dragCard = data.filter(d=>d.id == dragCardId)[0];
+    console.log(dragCard,destination);
+    setData((data)=>data = data.map((d:any)=>d.id == dragCard.id ? destination : d.id == destination.id ? dragCard : d))
+    setActive(null);
+  }
+
+
+  return (
+    <main className={`py-10 px-2 flex min-h-screen flex-col items-center justify-between md:p-20 bg-gray-100`}>
+      <ul className="w-[90%] md:w-[560px] bg-white py-2" id="draglist">
+        {data.map(item=>(
+          <DragItem key={item.id} isActive={active?.id == item.id} item={item} handleDragStart={handleDragStart} handleOnDrop={handleOnDrop}/>
+        ))}
+      </ul>
     </main>
   );
 }
